@@ -1,15 +1,12 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+
 
 const connectDB = async () => {
   try {
-    await mongoose.connect('mongodb://localhost:27017/crop-recommendation', {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log('MongoDB connected');
-  } catch (error) {
-    console.error('MongoDB connection error:', error);
-    process.exit(1);
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("DB Connected");
+  } catch (err) {
+    console.error("DB Connection Failed:", err.message);
   }
 };
 
