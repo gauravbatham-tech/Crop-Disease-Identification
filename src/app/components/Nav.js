@@ -3,14 +3,14 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 
 export default function Nav() {
-  const [menuOpen, setMenuOpen] = useState(false);
   const [theme, setTheme] = useState("light");
 
-  // determine initial theme on mount (localStorage -> system pref)
   useEffect(() => {
     if (typeof window === "undefined") return;
+
     const stored = localStorage.getItem("theme");
-    if (stored === "light" || stored === "dark") {
+
+    if (stored) {
       setTheme(stored);
     } else {
       const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -18,77 +18,70 @@ export default function Nav() {
     }
   }, []);
 
-  // apply theme class and persist whenever it changes
   useEffect(() => {
     const root = document.documentElement;
+
     if (theme === "dark") {
       root.classList.add("dark");
     } else {
       root.classList.remove("dark");
     }
+
     localStorage.setItem("theme", theme);
   }, [theme]);
 
   return (
-    <nav className="fixed top-0 w-full bg-white dark:bg-zinc-900 shadow z-50">
+    <nav className="fixed top-0 w-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur border-b z-50">
+
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        {/* HAMBURGER */}
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="text-2xl font-bold"
-        >
-          ☰
-        </button>
 
-        {/* TITLE */}
-        <h1 className="text-xl font-bold text-green-700 dark:text-green-400">
-          CropCare Advisor
-        </h1>
+        {/* LOGO */}
+        <Link href="/" className="text-xl font-bold text-indigo-600">
+          AgroVision
+        </Link>
 
-        {/* LINKS */}
-        <div className="flex items-center gap-6 text-sm font-medium">
-          <a href="#about">About</a>
-          <a href="#features">Features</a>
-          <a href="#workflow">Workflow</a>
-          <a href="#scope">Scope</a>
-          <Link
-            href="/recommend"
-            className="text-green-700 dark:text-green-400 font-semibold"
-          >
-            Recommendations
-          </Link>
-          <Link
-            href="/disease"
-            className="text-green-700 dark:text-green-400 font-semibold"
-          >
+        {/* NAV LINKS */}
+        <div className="hidden md:flex items-center gap-8 text-sm font-medium">
+
+          <Link href="/disease" className="hover:text-indigo-600">
             Detect Disease
           </Link>
-          {/* visible theme toggle */}
+
+
+
+          <a href="#about" className="hover:text-indigo-600">
+            About
+          </a>
+
+        </div>
+
+        {/* ACTION BUTTONS */}
+        <div className="flex items-center gap-4">
+
           <button
             onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-            className="text-xl"
-            aria-label="Toggle theme"
+            className="text-lg"
           >
             {theme === "light" ? "🌙" : "☀"}
           </button>
-        </div>
-      </div>
 
-      {/* HAMBURGER MENU (LEFT, LIMITED WIDTH) */}
-      {menuOpen && (
-        <div className="absolute left-0 top-full w-64 bg-white dark:bg-zinc-900 shadow-lg border-r animate-slideDown">
-          <div className="flex flex-col p-4 gap-4 text-sm">
-            <button
-              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-              className="text-left"
-            >
-              {theme === "light" ? "🌙 Dark Mode" : "☀ Light Mode"}
-            </button>
-            <button className="text-left">⚙ Settings</button>
-            <button className="text-left">ℹ Project Info</button>
-          </div>
+          <Link
+            href="/login"
+            className="text-sm font-medium hover:text-indigo-600"
+          >
+            Login
+          </Link>
+
+          <Link
+            href="/signup"
+            className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700"
+          >
+            Sign Up
+          </Link>
+
         </div>
-      )}
+
+      </div>
     </nav>
   );
 }
